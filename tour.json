@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Welcome to PocketDerm!",
+        "description": "The Curology application lives in this repo: PocketDerm. It contains the front and back end code for the Curology platform, including the customer and admin/provider applications."
+    },
+    {
+        "title": "Hello World 2",
+        "description": "My second item goes here. A long description goes here",
+        "filePath": "./tour.json",
+        "startLine": 1,
+        "endLine": 4
+    },
+    {
+        "title": "Hello World 3",
+        "description": "My third item goes here. A long description goes here",
+        "filePath": "./tour.json",
+        "startLine": 3,
+        "endLine": 8
+    }
+]
