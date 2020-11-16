@@ -18,14 +18,12 @@ module.exports = [
         
         Laravel provides a suite of tools and patterns for managing a web service, including a router and an ORM (Eloquent) for interacting with our MySQL database.
         `,
-        "filePath": "./tour.json",
-        "startLine": 1,
-        "endLine": 4
+        "filePath": "./tour-stops.js",
     },
     {
         "title": "Hello World 3",
         "description": "My third item goes here. A long description goes here",
-        "filePath": "./tour.json",
+        "filePath": "./tour-stops.js",
         "startLine": 3,
         "endLine": 8
     }

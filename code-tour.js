@@ -13,7 +13,7 @@ process.stdin.setRawMode(true);
 const { execSync } = require("child_process");
 const figlet = require("figlet");
 
-const tourSteps = require("./tour");
+const tourSteps = require("./tour-stops");
 
 async function giveTour() {
   for (let step of tourSteps) {
@@ -26,7 +26,11 @@ async function giveTour() {
     spacer(2);
 
     if (filePath) {
-      const codePreview = `sed -n ${startLine},${endLine}p ${filePath}`;
+      // By default, use `head` to show a bit of the file. Otherwise display the range.
+      const codePreview =
+        startLine === undefined || endLine === undefined
+          ? `head ${filePath}`
+          : `sed -n ${startLine},${endLine}p ${filePath}`;
       console.log("=====================================================");
       console.log(
         execSync(codePreview, {
@@ -37,15 +41,12 @@ async function giveTour() {
       spacer(2);
     }
 
-
     if (filePath) {
-        console.log(
-          "Press Enter to Continue\nPress o to open the file in your default editor\nPress q to quit"
-        );
+      console.log(
+        "Press Enter to Continue\nPress o to open the file in your default editor\nPress q to quit"
+      );
     } else {
-        console.log(
-          `Press Enter to Continue\nPress q to quit`
-        );
+      console.log(`Press Enter to Continue\nPress q to quit`);
     }
 
     await listenForInput(filePath);
@@ -59,7 +60,7 @@ function listenForInput(filePath) {
         process.exit();
       } else if (key.name === "q") {
         process.exit();
-      } else if (filePath && key.name === 'o') {
+      } else if (filePath && key.name === "o") {
         execSync(`open ${filePath}`);
       } else if (key.name === "return") {
         process.stdin.removeAllListeners();
