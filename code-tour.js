@@ -1,22 +1,26 @@
 #! /usr/bin/env node
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-console */
 
-/*************************************************
+/** ***********************************************
  * Code Tour: Onboard from inside the codebase
  *
  * Broken? Slack @zachc
- *************************************************/
+ ************************************************ */
 
-const readline = require("readline");
+const readline = require('readline');
+const { execSync } = require('child_process');
+const figlet = require('figlet');
+
+const tourSteps = require('./tour-stops.js');
+
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
 
-const { execSync } = require("child_process");
-const figlet = require("figlet");
-
-const tourSteps = require("./tour-stops");
-
 async function giveTour() {
-  for (let step of tourSteps) {
+  for (const step of tourSteps) {
     console.clear();
     const { title, description, filePath, startLine, endLine } = step;
 
@@ -31,47 +35,53 @@ async function giveTour() {
         startLine === undefined || endLine === undefined
           ? `head ${filePath}`
           : `sed -n ${startLine},${endLine}p ${filePath}`;
-      console.log("=====================================================");
+      console.log('=====================================================');
       console.log(
         execSync(codePreview, {
-          encoding: "utf-8",
-        })
+          encoding: 'utf-8',
+        }),
       );
-      console.log("=====================================================");
+      console.log('=====================================================');
       spacer(2);
     }
 
     if (filePath) {
       console.log(
-        "Press Enter to Continue\nPress o to open the file in your default editor\nPress q to quit"
+        'Press Enter to continue\nPress o to open the file in your default editor\nPress q to quit',
       );
     } else {
-      console.log(`Press Enter to Continue\nPress q to quit`);
+      console.log(`Press Enter to continue\nPress q to quit`);
     }
 
     await listenForInput(filePath);
   }
+
+  console.clear();
+  process.exit();
 }
 
 function listenForInput(filePath) {
   return new Promise((resolve) => {
-    process.stdin.on("keypress", (_, key) => {
-      if (key.ctrl && key.name === "c") {
+    function handleKeyPress(_ignored, key) {
+      if (key.ctrl && key.name === 'c') {
         process.exit();
-      } else if (key.name === "q") {
+      } else if (key.name === 'q') {
         process.exit();
-      } else if (filePath && key.name === "o") {
+      } else if (filePath && key.name === 'o') {
         execSync(`open ${filePath}`);
-      } else if (key.name === "return") {
-        process.stdin.removeAllListeners();
+      } else if (key.name === 'return') {
+        process.stdin.removeListener('keypress', handleKeyPress);
         resolve();
       }
-    });
+    }
+
+    process.stdin.on('keypress', handleKeyPress);
   });
 }
 
 function spacer(numNewLines) {
-  for (let i = 0; i <= numNewLines; i++) {
+  // eslint-disable-next-line curology/no-single-letter-variable
+  for (let i = 0; i <= numNewLines; i += 1) {
     console.log();
   }
 }
@@ -80,7 +90,7 @@ function figletify(str) {
   return new Promise((resolve, reject) => {
     figlet(str, function (err, data) {
       if (err) {
-        console.log("Something went wrong...");
+        console.log('Something went wrong...');
         reject(err);
       } else {
         // Output the figlet image to the terminal
